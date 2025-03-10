@@ -39,6 +39,7 @@ const Manager = () => {
             alert("All fields are required!");
             return;
         }
+        else{
         toast.success('Password Saved successfully', {
             position: "top-right",
             autoClose: 3000,
@@ -56,7 +57,7 @@ const Manager = () => {
 
         // Otherwise clear the form and show toast
         setform({ site: "", username: "", password: "" })
-
+    }
     }
 
     const handleChange = (e) => {
