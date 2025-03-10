@@ -13,8 +13,8 @@ const Manager = () => {
     const getpasswords = async () => {
         let req = await fetch("http://localhost:3000/");
         let passwords = await req.json()
-            setPasswordarray(passwords);
-            console.log(passwords);
+        setPasswordarray(passwords);
+        console.log(passwords);
 
     }
     useEffect(() => {
@@ -32,8 +32,8 @@ const Manager = () => {
         }
     }
 
-    const savepassword = (e) => {
-        
+    const savepassword = async (e) => {
+
         e.preventDefault();
         if (!form.site || !form.username || !form.password) {
             alert("All fields are required!");
@@ -49,9 +49,14 @@ const Manager = () => {
             theme: "light"
         });
         // console.log(form);
-        setPasswordarray([...Passwordarray, { ...form, id: uuidv4() }]);
-        localStorage.setItem("passwords", JSON.stringify([...Passwordarray, { ...form, id: uuidv4() }]));
-        setform({ site: "", username: "", password: "" });
+        await fetch("http://localhost:3000/", { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: form.id }) })
+
+        setPasswordarray([...Passwordarray, { ...form, id: uuidv4() }])
+        await fetch("http://localhost:3000/", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...form, id: uuidv4() }) })
+
+        // Otherwise clear the form and show toast
+        setform({ site: "", username: "", password: "" })
+
     }
 
     const handleChange = (e) => {
@@ -74,19 +79,19 @@ const Manager = () => {
 
     const deletel = (id) => {
         // console.log("deleting id", id);
-        let c=confirm("Are you sure you want to delete this password?");
-        if(c){
-            setPasswordarray([...Passwordarray.filter((item) => item.id !== id)]);
-            localStorage.setItem("passwords", JSON.stringify([...Passwordarray.filter((item) => item.id !== id)]));
-            toast.success('Password Deleted successfully', {
-                position: "top-right",
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: false,
-                draggable: false,
-                theme: "light"
-            });
+        let c = confirm("Are you sure you want to delete this password?");
+            if (c) {
+                setPasswordarray([...Passwordarray.filter((item) => item.id !== id)]);
+                fetch("http://localhost:3000/", { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id }) })
+                toast.success('Password Deleted successfully', {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: false,
+                    draggable: false,
+                    theme: "light"
+                });
         }
     }
 
@@ -127,7 +132,7 @@ const Manager = () => {
                     </div>
                 </div>
                 <div className='flex justify-center'>
-                    <button onClick={savepassowrd} className=' border border-black p-2 rounded-full bg-green-500 w-fit flex justify-center items-center hover:bg-green-600 font-bold'>
+                    <button onClick={savepassword} className=' border border-black p-2 rounded-full bg-green-500 w-fit flex justify-center items-center hover:bg-green-600 font-bold'>
                         <lord-icon
                             src="https://cdn.lordicon.com/jgnvfzqg.json"
                             trigger="hover"
@@ -181,3 +186,4 @@ const Manager = () => {
 }
 
 export default Manager
+
