@@ -32,7 +32,7 @@ const Manager = () => {
         }
     }
 
-    const savepassowrd = (e) => {
+    const savepassword = (e) => {
         
         e.preventDefault();
         if (!form.site || !form.username || !form.password) {
