@@ -10,11 +10,15 @@ const Manager = () => {
     const [Passwordarray, setPasswordarray] = useState([])
 
 
+    const getpasswords = async () => {
+        let req = await fetch("http://localhost:3000/");
+        let passwords = await req.json()
+            setPasswordarray(passwords);
+            console.log(passwords);
+
+    }
     useEffect(() => {
-        let passwords = localStorage.getItem("passwords");
-        if (passwords) {
-            setPasswordarray(JSON.parse(passwords));
-        }
+        getpasswords();
     }, [])
 
     const showpassword = () => {
@@ -44,7 +48,7 @@ const Manager = () => {
             draggable: false,
             theme: "light"
         });
-        console.log(form);
+        // console.log(form);
         setPasswordarray([...Passwordarray, { ...form, id: uuidv4() }]);
         localStorage.setItem("passwords", JSON.stringify([...Passwordarray, { ...form, id: uuidv4() }]));
         setform({ site: "", username: "", password: "" });
@@ -118,7 +122,7 @@ const Manager = () => {
                         <div className="relative">
                             <input ref={refa} value={form.password} onChange={handleChange} name="password" placeholder="Enter Password" type="password" className='border p-5 border-black w-full rounded-2xl py-[4px]' />
                             <span className="absolute right-[10px] top-2 cursor-pointer " onClick={showpassword}>
-                                <img ref={ref} src="/hide.png" alt="none" className='h-[20px]' /></span>
+                                <img ref={ref} src="/view.png" alt="none" className='h-[20px]' /></span>
                         </div>
                     </div>
                 </div>
